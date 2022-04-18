@@ -315,7 +315,7 @@ static int regcache_default_sync(struct regmap *map, unsigned int min,
 		ret = _regmap_write(map, reg, val);
 		map->cache_bypass = false;
 		if (ret) {
-			dev_err(map->dev, "Unable to sync register %#x. %d\n",
+			dev_dbg(map->dev, "Unable to sync register %#x. %d\n",
 				reg, ret);
 			return ret;
 		}
@@ -690,7 +690,7 @@ static int regcache_sync_block_single(struct regmap *map, void *block,
 
 		map->cache_bypass = false;
 		if (ret != 0) {
-			dev_err(map->dev, "Unable to sync register %#x. %d\n",
+			dev_dbg(map->dev, "Unable to sync register %#x. %d\n",
 				regtmp, ret);
 			return ret;
 		}
@@ -719,7 +719,7 @@ static int regcache_sync_block_raw_flush(struct regmap *map, const void **data,
 
 	ret = _regmap_raw_write(map, base, *data, count * val_bytes, false);
 	if (ret)
-		dev_err(map->dev, "Unable to sync registers %#x-%#x. %d\n",
+		dev_dbg(map->dev, "Unable to sync registers %#x-%#x. %d\n",
 			base, cur - map->reg_stride, ret);
 
 	map->cache_bypass = false;
