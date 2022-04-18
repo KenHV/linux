@@ -310,7 +310,7 @@ int snd_hdmi_get_eld(struct hda_codec *codec, hda_nid_t nid,
 		size = 128;
 	}
 	if (size < ELD_FIXED_BYTES || size > ELD_MAX_SIZE) {
-		codec_info(codec, "HDMI: invalid ELD buf size %d\n", size);
+		codec_dbg(codec, "HDMI: invalid ELD buf size %d\n", size);
 		return -ERANGE;
 	}
 
