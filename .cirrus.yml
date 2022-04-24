@@ -1,0 +1,16 @@
+env:
+  CIRRUS_CLONE_DEPTH: "1"
+
+bcm2711_task:
+  name: bcm2711 build
+  timeout_in: 120m
+  container:
+    image: archlinux:base-devel
+    cpu: 8
+    memory: 12G
+  environment:
+    RCLONE_CONF: "ENCRYPTED[!f561cdd03c82c5d1e30aece7427aa751dc66fce3a2ad27089e2b10a7809e44c8c17149deea8858679b109aa4a2a8a95b!]"
+  compile_script:
+    - chmod +x build.sh && ./build.sh
+  artifacts:
+    path: "bcm2711_kensur_kernel.zip"
