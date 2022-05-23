@@ -76,7 +76,7 @@ prepare() {
 build() {
   cd ..
   if [ "$ccache" = "y" ]; then
-    make CC="ccache clang" all -j$(nproc --all)
+    env PATH="/usr/lib/ccache/bin:${PATH}" make all -j$(nproc --all)
   else
     make all -j$(nproc --all)
   fi
