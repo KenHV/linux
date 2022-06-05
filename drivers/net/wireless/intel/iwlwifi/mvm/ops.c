@@ -39,7 +39,7 @@ static const struct iwl_op_mode_ops iwl_mvm_ops;
 static const struct iwl_op_mode_ops iwl_mvm_ops_mq;
 
 struct iwl_mvm_mod_params iwlmvm_mod_params = {
-	.power_scheme = IWL_POWER_SCHEME_BPS,
+	.power_scheme = IWL_POWER_SCHEME_CAM,
 	/* rest of fields are 0 by default */
 };
 
