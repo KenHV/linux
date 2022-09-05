@@ -126,6 +126,7 @@ config ZEN_INTERACTIVE
 
 	    Background-reclaim hugepages...:   no   ->   yes
 	    Compact Unevictable............:   1    ->   0
+	    Swap-in readahead..............:   3    ->   0
 
 config BROKEN
 	bool
