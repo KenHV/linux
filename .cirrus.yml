@@ -1,0 +1,47 @@
+env:
+  CIRRUS_CLONE_DEPTH: "1"
+  GH_AUTH: "ENCRYPTED[!37f49a3c2ff53ae3cd6478518356b31d939652e0113563bc5eb7810872807212776b2a02c17c21f6228eb967162fb357!]"
+
+generic_task:
+  name: Generic build
+  timeout_in: 120m
+  container:
+    image: archlinux:base-devel
+    cpu: 8
+    memory: 4G
+  setup_env_script:
+    - pacman -Syu --needed --noconfirm bc libelf pahole cpio perl tar xz
+      git zstd github-cli kmod
+    - gh auth login --with-token <<< "$GH_AUTH"
+    - sed -i '/E_ROOT/d' /usr/bin/makepkg
+    - sed -i "s/PKGEXT='.pkg.tar.xz'/PKGEXT='.pkg.tar.zst'/" /etc/makepkg.conf
+    - echo 'COMPRESSZST+=(--threads=0)' >> /etc/makepkg.conf
+  build_script:
+    - env ci=y makepkg -s --nodeps
+  release_script:
+    - VER=$(grep "VERSION =" Makefile | head -1 | sed "s/.*= //" )
+    - PATCH=$(grep "PATCHLEVEL =" Makefile | head -1 | sed "s/.*= //")
+    - SUB=$(grep "SUBLEVEL =" Makefile | head -1 | sed "s/.*= //")
+    - TAG="${VER}.${PATCH}.${SUB}"
+    - TARGET="${VER}.${PATCH}"
+    - gh release create "${TAG}" *.pkg.tar.zst -t "${TAG}" -F notes.md --target "${TARGET}"
+  artifacts:
+    path: "*.pkg.tar.zst"
+
+athena_task:
+  name: Athena build
+  timeout_in: 120m
+  container:
+    image: archlinux:base-devel
+    cpu: 8
+    memory: 4G
+  setup_env_script:
+    - pacman -Syu --needed --noconfirm bc libelf pahole cpio perl tar xz
+      git zstd kmod
+    - sed -i '/E_ROOT/d' /usr/bin/makepkg
+    - sed -i "s/PKGEXT='.pkg.tar.xz'/PKGEXT='.pkg.tar.zst'/" /etc/makepkg.conf
+    - echo 'COMPRESSZST+=(--threads=0)' >> /etc/makepkg.conf
+  build_script:
+    - env ci=y personal=y makepkg -s --nodeps
+  artifacts:
+    path: "*.pkg.tar.zst"
